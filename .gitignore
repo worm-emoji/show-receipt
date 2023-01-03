@@ -1,3 +1,6 @@
 img/
 cache/
 out/
+broadcast/
+holders.txt
+.env

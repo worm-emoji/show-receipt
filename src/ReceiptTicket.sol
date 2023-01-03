@@ -131,6 +131,12 @@ contract ReceiptTicket is ERC721A, Ownable {
         ticketContract = _ticketContract;
     }
 
+    function airdrop(address[] calldata _recipients) external onlyOwner {
+        for (uint256 i = 0; i < _recipients.length; i++) {
+            _mint(_recipients[i], 1);
+        }
+    }
+
     function withdraw() external onlyOwner {
         payable(this.owner()).transfer(address(this).balance);
     }

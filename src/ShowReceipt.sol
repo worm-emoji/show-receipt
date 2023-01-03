@@ -7,7 +7,7 @@ import "openzeppelin/utils/Strings.sol";
 
 contract ShowReceipt is ERC721A, Ownable {
     string public baseURI;
-  
+
     constructor(string memory _baseURI) ERC721A("Show This Receipt At Exit", "RCPT") {
         baseURI = _baseURI;
         _mint(msg.sender, 14);
@@ -20,6 +20,10 @@ contract ShowReceipt is ERC721A, Ownable {
     // Admin functions
     function setBaseURI(string memory _baseURI) external onlyOwner {
         baseURI = _baseURI;
+    }
+
+    function mint(address to, uint256 qty) external onlyOwner {
+        _mint(to, qty);
     }
 
     // View functions
