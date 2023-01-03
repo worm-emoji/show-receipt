@@ -1,0 +1,19 @@
+{
+  "name": "SHOW RECEIPT #11",
+  "description": "Welcome to the United States of America! This is a receipt from January 5, 2021 commemorating your entry into the country.",
+  "image": "ipfs://QmVg3VuNLvVno2aiKK1q617EKZvuJk2WjEaKfSsNGhHJmN/2021_01_05.jpg",
+  "attributes": [
+    {
+      "trait_type": "Year",
+      "value": "2021"
+    },
+    {
+      "trait_type": "President",
+      "value": "Trump"
+    },
+    {
+      "trait_type": "ETH Price",
+      "value": "$1041.16"
+    }
+  ]
+}

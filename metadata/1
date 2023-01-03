@@ -1,0 +1,19 @@
+{
+  "name": "SHOW RECEIPT #1",
+  "description": "Welcome to the United States of America! This is a receipt from June 6, 2016 commemorating your entry into the country.",
+  "image": "ipfs://QmVg3VuNLvVno2aiKK1q617EKZvuJk2WjEaKfSsNGhHJmN/2016_06_06.jpg",
+  "attributes": [
+    {
+      "trait_type": "Year",
+      "value": "2016"
+    },
+    {
+      "trait_type": "President",
+      "value": "Obama"
+    },
+    {
+      "trait_type": "ETH Price",
+      "value": "$13.97"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "SHOW RECEIPT #13",
+  "description": "Welcome to the United States of America! This is a receipt from December 14, 2022 commemorating your entry into the country.",
+  "image": "ipfs://QmVg3VuNLvVno2aiKK1q617EKZvuJk2WjEaKfSsNGhHJmN/2022_12_14.jpg",
+  "attributes": [
+    {
+      "trait_type": "Year",
+      "value": "2022"
+    },
+    {
+      "trait_type": "President",
+      "value": "Biden"
+    },
+    {
+      "trait_type": "ETH Price",
+      "value": "$1320.66"
+    }
+  ]
+}
