@@ -5,6 +5,7 @@ pragma solidity ^0.8.17;
 import "ERC721A/ERC721A.sol";
 import {MerkleProof} from "openzeppelin/utils/cryptography/MerkleProof.sol";
 import "openzeppelin/access/Ownable.sol";
+import "openzeppelin/utils/Strings.sol";
 
 contract ReceiptTicket is ERC721A, Ownable {
     // mint variables
@@ -12,6 +13,7 @@ contract ReceiptTicket is ERC721A, Ownable {
     uint256 public WORM_FAN_TICKET_PRICE = 0.00333 ether;
     uint256 public MAX_WORM_FAN_MINTS = 3;
     bytes32 public merkleRoot;
+    string public baseURI;
     bool public canMint;
     uint256 public mintCloseTime;
     mapping(address => uint256) public wormFanMints;
@@ -23,14 +25,16 @@ contract ReceiptTicket is ERC721A, Ownable {
     error TooEarly();
 
     // drawing variables
-    uint256 internal _lastDrawBlock;
-    uint256 internal _currentWinnerIndex;
+    uint256 public lastDrawBlock;
+    uint256 public currentWinnerIndex;
     address[14] public winners;
 
     error AllWinnersDrawn();
     error AlreadyPickedThisBlock();
 
-    constructor() ERC721A("Receipt Ticket by @worm_emoji", "RCPT") {}
+    constructor(string memory _baseURI) ERC721A("Receipt Ticket by @worm_emoji", "RCPT") {
+        baseURI = _baseURI;
+    }
 
     // Internal utility functions
 
@@ -75,19 +79,21 @@ contract ReceiptTicket is ERC721A, Ownable {
         _mint(msg.sender, quantity);
     }
 
-    function pickWinners() external {
+    function pickWinner() external {
         if (block.timestamp < mintCloseTime) revert TooEarly();
-        if (_lastDrawBlock == block.number) revert AlreadyPickedThisBlock();
-        if (_currentWinnerIndex == 14) revert AllWinnersDrawn();
+        if (lastDrawBlock == block.number) revert AlreadyPickedThisBlock();
+        if (currentWinnerIndex == 14) revert AllWinnersDrawn();
 
-        uint256 winner = getWinner();
-        winners[_currentWinnerIndex] = ownerOf(winner);
-        _lastDrawBlock = block.number;
-        _currentWinnerIndex++;
+        uint256 winner = _getRandomHolder();
+        winners[currentWinnerIndex] = ownerOf(winner);
+        lastDrawBlock = block.number;
+        currentWinnerIndex++;
     }
 
-    function getWinner() internal view returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(block.timestamp, block.basefee, block.difficulty, msg.sender))) % totalSupply();
+    function _getRandomHolder() internal view returns (uint256) {
+        return uint256(
+            keccak256(abi.encodePacked(block.number, block.timestamp, block.basefee, block.difficulty, block.gaslimit))
+        ) % totalSupply();
     }
 
     // Admin functions
@@ -109,7 +115,16 @@ contract ReceiptTicket is ERC721A, Ownable {
         MAX_WORM_FAN_MINTS = _maxMints;
     }
 
+    function setBaseURI(string memory _baseURI) external onlyOwner {
+        baseURI = _baseURI;
+    }
+
     function withdraw() external onlyOwner {
         payable(this.owner()).transfer(address(this).balance);
+    }
+
+    // View functions
+    function tokenURI(uint256 tokenID) public view override returns (string memory) {
+        return string(abi.encodePacked(baseURI, Strings.toString(tokenID)));
     }
 }

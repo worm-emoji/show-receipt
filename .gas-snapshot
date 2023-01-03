@@ -1,0 +1,3 @@
+ReceiptTicketTest:testFailPickWinner() (gas: 85330)
+ReceiptTicketTest:testMint() (gas: 60954)
+ReceiptTicketTest:testPickWinner() (gas: 84286)
