@@ -2,12 +2,14 @@
 pragma solidity >=0.8.0;
 
 import {ReceiptTicket} from "./ReceiptTicket.sol";
+import {ShowReceipt} from "./ShowReceipt.sol";
 import {DSTest} from "ds-test/test.sol";
 import {Vm} from "forge-std/Vm.sol";
 import "forge-std/console.sol";
 
 contract ReceiptTicketTest is DSTest {
     ReceiptTicket internal ticket;
+    ShowReceipt internal receipt;
     Vm internal immutable vm = Vm(HEVM_ADDRESS);
     address[] internal users;
     bytes32 internal nextUser = keccak256(abi.encodePacked("user address"));
@@ -20,7 +22,9 @@ contract ReceiptTicketTest is DSTest {
     }
 
     function setUp() public {
-        ticket = new ReceiptTicket("");
+        receipt = new ShowReceipt("");
+        ticket = new ReceiptTicket("", address(receipt));
+        receipt.setApprovalForAll(address(ticket), true);
         ticket.setMintInfo(true, block.timestamp + 1000);
         users = new address[](100);
         for (uint256 i = 0; i < 100; i++) {

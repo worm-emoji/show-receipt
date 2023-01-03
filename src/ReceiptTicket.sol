@@ -25,6 +25,7 @@ contract ReceiptTicket is ERC721A, Ownable {
     error TooEarly();
 
     // drawing variables
+    address public ticketContract;
     uint256 public lastDrawBlock;
     uint256 public currentWinnerIndex;
     address[14] public winners;
@@ -32,7 +33,8 @@ contract ReceiptTicket is ERC721A, Ownable {
     error AllWinnersDrawn();
     error AlreadyPickedThisBlock();
 
-    constructor(string memory _baseURI) ERC721A("Receipt Ticket by @worm_emoji", "RCPT") {
+    constructor(string memory _baseURI, address _ticketContract) ERC721A("Receipt Ticket", "RCPT_TKT") {
+        ticketContract = _ticketContract;
         baseURI = _baseURI;
     }
 
@@ -84,9 +86,15 @@ contract ReceiptTicket is ERC721A, Ownable {
         if (lastDrawBlock == block.number) revert AlreadyPickedThisBlock();
         if (currentWinnerIndex == 14) revert AllWinnersDrawn();
 
-        uint256 winner = _getRandomHolder();
-        winners[currentWinnerIndex] = ownerOf(winner);
+        uint256 winningToken = _getRandomHolder();
+        address winner = ownerOf(winningToken);
+        winners[currentWinnerIndex] = winner;
         lastDrawBlock = block.number;
+
+        IERC721A mainTicket = IERC721A(ticketContract);
+        uint256 tokenId = currentWinnerIndex + 1;
+        mainTicket.transferFrom(owner(), winner, tokenId);
+
         currentWinnerIndex++;
     }
 
@@ -117,6 +125,10 @@ contract ReceiptTicket is ERC721A, Ownable {
 
     function setBaseURI(string memory _baseURI) external onlyOwner {
         baseURI = _baseURI;
+    }
+
+    function setTicketContract(address _ticketContract) external onlyOwner {
+        ticketContract = _ticketContract;
     }
 
     function withdraw() external onlyOwner {
