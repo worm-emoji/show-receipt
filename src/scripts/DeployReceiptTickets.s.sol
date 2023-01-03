@@ -22,10 +22,12 @@ contract DeployReceiptTickets is Script {
 
         vm.startBroadcast(0x9aaC8cCDf50dD34d06DF661602076a07750941F6);
         ShowReceipt receipt = new ShowReceipt("");
-        ReceiptTicket ticket = new ReceiptTicket("", address(receipt));
+        ReceiptTicket ticket =
+        new ReceiptTicket("https://i.imgur.com/9QupZue.jpg", address(receipt), 0x861436d6e968512d91e4cd8545b3c6224e5cc1d39ee4e783ccb9f35224683cf4);
         ticket.airdrop(holders);
         receipt.setApprovalForAll(address(ticket), true);
-        ticket.setMintInfo(true, block.timestamp + 60);
+
+        ticket.setMintInfo(true, block.timestamp + 259200);
         vm.stopBroadcast();
     }
 }

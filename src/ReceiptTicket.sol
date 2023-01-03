@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 
 import "ERC721A/ERC721A.sol";
 import {MerkleProof} from "openzeppelin/utils/cryptography/MerkleProof.sol";
+import {Base64} from "openzeppelin/utils/Base64.sol";
 import "openzeppelin/access/Ownable.sol";
 import "openzeppelin/utils/Strings.sol";
 
@@ -13,7 +14,7 @@ contract ReceiptTicket is ERC721A, Ownable {
     uint256 public WORM_FAN_TICKET_PRICE = 0.00333 ether;
     uint256 public MAX_WORM_FAN_MINTS = 3;
     bytes32 public merkleRoot;
-    string public baseURI;
+    string public imageURI;
     bool public canMint;
     uint256 public mintCloseTime;
     mapping(address => uint256) public wormFanMints;
@@ -33,9 +34,12 @@ contract ReceiptTicket is ERC721A, Ownable {
     error AllWinnersDrawn();
     error AlreadyPickedThisBlock();
 
-    constructor(string memory _baseURI, address _ticketContract) ERC721A("Receipt Ticket", "RCPT_TKT") {
+    constructor(string memory _imageURI, address _ticketContract, bytes32 _merkleRoot)
+        ERC721A("Receipt Ticket", "RCPT_TKT")
+    {
         ticketContract = _ticketContract;
-        baseURI = _baseURI;
+        imageURI = _imageURI;
+        merkleRoot = _merkleRoot;
     }
 
     // Internal utility functions
@@ -50,32 +54,17 @@ contract ReceiptTicket is ERC721A, Ownable {
 
     // Mint functions
     function mint(uint256 quantity) external payable {
-        if (!_mintOpen()) {
-            revert MintClosed();
-        }
+        if (!_mintOpen()) revert MintClosed();
+        if (msg.value != TICKET_PRICE * quantity) revert IncorrectPrice();
 
-        if (msg.value != TICKET_PRICE * quantity) {
-            revert IncorrectPrice();
-        }
         _mint(msg.sender, quantity);
     }
 
     function mintWormFan(uint256 quantity, bytes32[] calldata proof) external payable {
-        if (!_mintOpen()) {
-            revert MintClosed();
-        }
-
-        if (msg.value != WORM_FAN_TICKET_PRICE * quantity) {
-            revert IncorrectPrice();
-        }
-
-        if (!_isAllowlisted(msg.sender, proof)) {
-            revert NotAWormFan();
-        }
-
-        if (wormFanMints[msg.sender] + quantity > MAX_WORM_FAN_MINTS) {
-            revert WormFanMaxReached();
-        }
+        if (!_mintOpen()) revert MintClosed();
+        if (msg.value != WORM_FAN_TICKET_PRICE * quantity) revert IncorrectPrice();
+        if (!_isAllowlisted(msg.sender, proof)) revert NotAWormFan();
+        if (wormFanMints[msg.sender] + quantity > MAX_WORM_FAN_MINTS) revert WormFanMaxReached();
 
         wormFanMints[msg.sender] += quantity;
         _mint(msg.sender, quantity);
@@ -123,8 +112,8 @@ contract ReceiptTicket is ERC721A, Ownable {
         MAX_WORM_FAN_MINTS = _maxMints;
     }
 
-    function setBaseURI(string memory _baseURI) external onlyOwner {
-        baseURI = _baseURI;
+    function setImageURI(string memory _imageURI) external onlyOwner {
+        imageURI = _imageURI;
     }
 
     function setTicketContract(address _ticketContract) external onlyOwner {
@@ -143,6 +132,23 @@ contract ReceiptTicket is ERC721A, Ownable {
 
     // View functions
     function tokenURI(uint256 tokenID) public view override returns (string memory) {
-        return string(abi.encodePacked(baseURI, Strings.toString(tokenID)));
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        "{",
+                        '"name": "Receipt Ticket #',
+                        Strings.toString(tokenID),
+                        '",',
+                        '"description": "This is a blank receipt. 14 blank receipt holders will be randomly selected to get an official Show Receipt To Exit NFT.",',
+                        '"image": "',
+                        imageURI,
+                        '"}'
+                    )
+                )
+            )
+        );
+
+        return string(abi.encodePacked("data:application/json;base64,", json));
     }
 }
