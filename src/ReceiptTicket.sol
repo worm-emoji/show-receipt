@@ -80,13 +80,13 @@ contract ReceiptTicket is ERC721A, Ownable {
         uint256 winningToken = _getRandomToken();
         // ownerOf will revert if the ticket has been burned (already chosen)
         address winner = ownerOf(winningToken);
+
+        // update all state before sending off token
         lastDrawBlock = block.number;
-
-        IERC721A mainTicket = IERC721A(ticketContract);
         currentWinnerIndex++;
-
         _burn(winningToken);
-        mainTicket.transferFrom(owner(), winner, currentWinnerIndex);
+
+        IERC721A(ticketContract).transferFrom(owner(), winner, currentWinnerIndex);
     }
 
     function _getRandomToken() internal view returns (uint256) {
