@@ -1,4 +1,4 @@
-ReceiptTicketTest:testFailPickWinners() (gas: 112612)
+ReceiptTicketTest:testFailPickWinners() (gas: 145398)
 ReceiptTicketTest:testMint() (gas: 60998)
-ReceiptTicketTest:testPickWinner() (gas: 108609)
-ReceiptTicketTest:testPickWinners() (gas: 517016)
+ReceiptTicketTest:testPickWinner() (gas: 141395)
+ReceiptTicketTest:testPickWinners() (gas: 687304)

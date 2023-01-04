@@ -64,9 +64,10 @@ contract ReceiptTicket is ERC721A, Ownable {
         if (!_mintOpen()) revert MintClosed();
         if (msg.value != WORM_FAN_TICKET_PRICE * quantity) revert IncorrectPrice();
         if (!_isAllowlisted(msg.sender, proof)) revert NotAWormFan();
-        wormFanMints[msg.sender] += quantity;
 
-        if (wormFanMints[msg.sender] > MAX_WORM_FAN_MINTS) revert WormFanMaxReached();
+        uint256 newMintCount = wormFanMints[msg.sender] + quantity;
+        if (newMintCount > MAX_WORM_FAN_MINTS) revert WormFanMaxReached();
+        wormFanMints[msg.sender] = newMintCount;
 
         _mint(msg.sender, quantity);
     }
@@ -77,8 +78,8 @@ contract ReceiptTicket is ERC721A, Ownable {
         if (currentWinnerIndex == 14) revert AllWinnersDrawn();
 
         uint256 winningToken = _getRandomToken();
+        // ownerOf will revert if the ticket has been burned (already chosen)
         address winner = ownerOf(winningToken);
-        if (winner == address(0)) revert TicketBurned();
         lastDrawBlock = block.number;
 
         IERC721A mainTicket = IERC721A(ticketContract);

@@ -60,6 +60,7 @@ contract ReceiptTicketTest is DSTest {
 
         for (uint256 i = 0; i < 14; i++) {
             vm.warp(block.timestamp + 12);
+            vm.difficulty(i + 1);
             vm.roll(block.number + 1);
             ticket.pickWinner();
         }
