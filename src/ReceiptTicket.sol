@@ -29,10 +29,10 @@ contract ReceiptTicket is ERC721A, Ownable {
     address public ticketContract;
     uint256 public lastDrawBlock;
     uint256 public currentWinnerIndex;
-    address[14] public winners;
 
     error AllWinnersDrawn();
     error AlreadyPickedThisBlock();
+    error TicketBurned();
 
     constructor(string memory _imageURI, address _ticketContract, bytes32 _merkleRoot)
         ERC721A("Receipt Ticket", "RCPT_TKT")
@@ -64,9 +64,10 @@ contract ReceiptTicket is ERC721A, Ownable {
         if (!_mintOpen()) revert MintClosed();
         if (msg.value != WORM_FAN_TICKET_PRICE * quantity) revert IncorrectPrice();
         if (!_isAllowlisted(msg.sender, proof)) revert NotAWormFan();
-        if (wormFanMints[msg.sender] + quantity > MAX_WORM_FAN_MINTS) revert WormFanMaxReached();
-
         wormFanMints[msg.sender] += quantity;
+
+        if (wormFanMints[msg.sender] > MAX_WORM_FAN_MINTS) revert WormFanMaxReached();
+
         _mint(msg.sender, quantity);
     }
 
@@ -77,17 +78,18 @@ contract ReceiptTicket is ERC721A, Ownable {
 
         uint256 winningToken = _getRandomToken();
         address winner = ownerOf(winningToken);
-        winners[currentWinnerIndex] = winner;
+        if (winner == address(0)) revert TicketBurned();
         lastDrawBlock = block.number;
 
         IERC721A mainTicket = IERC721A(ticketContract);
         currentWinnerIndex++;
 
+        _burn(winningToken);
         mainTicket.transferFrom(owner(), winner, currentWinnerIndex);
     }
 
     function _getRandomToken() internal view returns (uint256) {
-        return block.difficulty % totalSupply();
+        return block.difficulty % _totalMinted();
     }
 
     // Admin functions
