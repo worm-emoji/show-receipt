@@ -75,7 +75,7 @@ contract ReceiptTicket is ERC721A, Ownable {
         if (lastDrawBlock == block.number) revert AlreadyPickedThisBlock();
         if (currentWinnerIndex == 14) revert AllWinnersDrawn();
 
-        uint256 winningToken = _getRandomHolder();
+        uint256 winningToken = _getRandomToken();
         address winner = ownerOf(winningToken);
         winners[currentWinnerIndex] = winner;
         lastDrawBlock = block.number;
@@ -87,7 +87,7 @@ contract ReceiptTicket is ERC721A, Ownable {
         currentWinnerIndex++;
     }
 
-    function _getRandomHolder() internal view returns (uint256) {
+    function _getRandomToken() internal view returns (uint256) {
         return uint256(
             keccak256(abi.encodePacked(block.number, block.timestamp, block.basefee, block.difficulty, block.gaslimit))
         ) % totalSupply();
