@@ -81,10 +81,9 @@ contract ReceiptTicket is ERC721A, Ownable {
         lastDrawBlock = block.number;
 
         IERC721A mainTicket = IERC721A(ticketContract);
-        uint256 tokenId = currentWinnerIndex + 1;
         currentWinnerIndex++;
 
-        mainTicket.transferFrom(owner(), winner, tokenId);
+        mainTicket.transferFrom(owner(), winner, currentWinnerIndex);
     }
 
     function _getRandomToken() internal view returns (uint256) {
