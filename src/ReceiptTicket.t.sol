@@ -23,7 +23,7 @@ contract ReceiptTicketTest is DSTest {
 
     function setUp() public {
         receipt = new ShowReceipt("");
-        ticket = new ReceiptTicket("", address(receipt));
+        ticket = new ReceiptTicket("", address(receipt), 0x00);
         receipt.setApprovalForAll(address(ticket), true);
         ticket.setMintInfo(true, block.timestamp + 1000);
         users = new address[](100);
