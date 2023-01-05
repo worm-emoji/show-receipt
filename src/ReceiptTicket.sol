@@ -15,6 +15,8 @@ contract ReceiptTicket is ERC721A, Ownable {
     uint256 public MAX_WORM_FAN_MINTS = 3;
     bytes32 public merkleRoot;
     string public imageURI;
+    string private _description =
+        "Welcome to the United States of America. Please show this receipt at the exit. Thank you. At the end of the 48 hour minting window, 14 winners will be randomly selected to receive a 1/1 NFT.";
     bool public canMint;
     uint256 public mintCloseTime;
     mapping(address => uint256) public wormFanMints;
@@ -125,6 +127,10 @@ contract ReceiptTicket is ERC721A, Ownable {
         ticketContract = _ticketContract;
     }
 
+    function setDescription(string memory _newDescription) external onlyOwner {
+        _description = _newDescription;
+    }
+
     function airdrop(address[] calldata _recipients) external onlyOwner {
         for (uint256 i = 0; i < _recipients.length; i++) {
             _mint(_recipients[i], 1);
@@ -136,7 +142,7 @@ contract ReceiptTicket is ERC721A, Ownable {
     }
 
     // View functions
-    function tokenURI(uint256 tokenID) public view override returns (string memory) {
+    function tokenURI(uint256 tokenID) public view override(ERC721A) returns (string memory) {
         string memory json = Base64.encode(
             bytes(
                 string(
@@ -145,7 +151,9 @@ contract ReceiptTicket is ERC721A, Ownable {
                         '"name": "Receipt Ticket #',
                         Strings.toString(tokenID),
                         '",',
-                        '"description": "This is a blank receipt. 14 blank receipt holders will be randomly selected to get an official Show Receipt To Exit NFT.",',
+                        '"description": "',
+                        _description,
+                        '",',
                         '"image": "',
                         imageURI,
                         '"}'
