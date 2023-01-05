@@ -90,7 +90,12 @@ contract ReceiptTicket is ERC721A, Ownable {
     }
 
     function _getRandomToken() internal view returns (uint256) {
-        return block.difficulty % _totalMinted();
+        // block.difficulty post eth merge is PREVRANDAO.
+        // you can read more about that here: https://eth2book.info/altair/part2/building_blocks/randomness/#the-randao
+        // but it's a reliably random number that is available on every block. since it's from the past,
+        // we also mix in the basefee (decided when this current block is produced) to make it more unpredictable.
+
+        return uint256(keccak256(abi.encodePacked(block.basefee, block.difficulty))) % totalSupply();
     }
 
     // Admin functions
