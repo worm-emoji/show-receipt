@@ -12,7 +12,7 @@ contract ReceiptTicket is ERC721A, Ownable {
     // mint variables
     uint256 public TICKET_PRICE = 0.00777 ether;
     uint256 public WORM_FAN_TICKET_PRICE = 0.00333 ether;
-    uint256 public MAX_WORM_FAN_MINTS = 3;
+    uint256 public MAX_WORM_FAN_MINTS = 5;
     bytes32 public merkleRoot;
     string public imageURI;
     string private _description =
@@ -142,7 +142,7 @@ contract ReceiptTicket is ERC721A, Ownable {
     }
 
     // View functions
-    function tokenURI(uint256 tokenID) public view override(ERC721A) returns (string memory) {
+    function tokenURI(uint256 tokenID) public view override (ERC721A) returns (string memory) {
         string memory json = Base64.encode(
             bytes(
                 string(
