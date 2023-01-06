@@ -97,7 +97,7 @@ contract ReceiptTicket is ERC721A, Ownable {
         // but it's a reliably random number that is available on every block. since it's from the past,
         // we also mix in the basefee (decided when this current block is produced) to make it more unpredictable.
 
-        return uint256(keccak256(abi.encodePacked(block.basefee, block.difficulty))) % totalSupply();
+        return uint256(keccak256(abi.encodePacked(block.basefee, block.difficulty))) % _totalMinted();
     }
 
     // Admin functions

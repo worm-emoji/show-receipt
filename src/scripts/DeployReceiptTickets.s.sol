@@ -2,15 +2,14 @@
 pragma solidity 0.8.17;
 
 import "forge-std/Script.sol";
-import "openzeppelin/proxy/ERC1967/ERC1967Proxy.sol";
 import "../ReceiptTicket.sol";
 import "../ShowReceipt.sol";
 
 contract DeployReceiptTickets is Script {
-    uint256 public holdersCount = 108;
+    uint256 public holdersCount = 113;
 
     function run() public {
-        // uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
 
         address[] memory holders = new address[](holdersCount);
 
@@ -20,14 +19,13 @@ contract DeployReceiptTickets is Script {
             console.log(vm.parseAddress(line));
         }
 
-        vm.startBroadcast(0x9aaC8cCDf50dD34d06DF661602076a07750941F6);
-        ShowReceipt receipt = new ShowReceipt("");
+        vm.startBroadcast(deployerPrivateKey);
+        ShowReceipt receipt = new ShowReceipt("ipfs://QmaqA2KheozY8BecooAZwyLeg7TTa9DUjNUUfGPvGVep5p/");
         ReceiptTicket ticket =
-        new ReceiptTicket("https://i.imgur.com/9QupZue.jpg", address(receipt), 0x861436d6e968512d91e4cd8545b3c6224e5cc1d39ee4e783ccb9f35224683cf4);
+        new ReceiptTicket("ipfs://QmRWJUvR3YVF8bWHtpquaqgWUKMCGA7z9msVnDuFYUBuLu", address(receipt), 0x24ec4658b186699b16c8ff07d4a73101463553a3b5d0bb6c1c34fc7ebb0bb794);
         ticket.airdrop(holders);
         receipt.setApprovalForAll(address(ticket), true);
-
-        ticket.setMintInfo(true, block.timestamp + 259200);
+        ticket.setMintInfo(true, block.timestamp + 172800); // 48 hours
         vm.stopBroadcast();
     }
 }

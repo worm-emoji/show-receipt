@@ -63,7 +63,7 @@ func main() {
 		m := Metadata{
 			Image:       fmt.Sprintf("%s/%s", ipfs, f.Name()),
 			Name:        fmt.Sprintf("SHOW RECEIPT #%d", tokenID),
-			Description: fmt.Sprintf("Welcome to the United States of America! This is a receipt from %s commemorating your entry into the country.", t.Format("January 2, 2006")),
+			Description: fmt.Sprintf("Welcome to the United States of America! Please show this receipt to exit. This is a receipt from %s commemorating your entry into the country.", t.Format("January 2, 2006")),
 			Attributes: []Attribute{
 				{
 					TraitType: "Year",
