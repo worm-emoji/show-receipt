@@ -8,7 +8,7 @@ contract DeployReceiptTokenURI is Script {
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-        new ShowReceiptTokenURI("ipfs://QmaqA2KheozY8BecooAZwyLeg7TTa9DUjNUUfGPvGVep5p");
+        new ShowReceiptTokenURI("ipfs://QmQY775pGMKGchRQ6bR7wJsPMUEkvEVmyn7Rfx813tLDWw/");
         vm.stopBroadcast();
     }
 }

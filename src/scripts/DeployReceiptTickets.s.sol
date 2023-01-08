@@ -20,7 +20,7 @@ contract DeployReceiptTickets is Script {
         }
 
         vm.startBroadcast(deployerPrivateKey);
-        ShowReceipt receipt = new ShowReceipt("ipfs://QmaqA2KheozY8BecooAZwyLeg7TTa9DUjNUUfGPvGVep5p/");
+        ShowReceipt receipt = new ShowReceipt("ipfs://QmQY775pGMKGchRQ6bR7wJsPMUEkvEVmyn7Rfx813tLDWw/");
         ReceiptTicket ticket =
         new ReceiptTicket("ipfs://QmRWJUvR3YVF8bWHtpquaqgWUKMCGA7z9msVnDuFYUBuLu", address(receipt), 0x24ec4658b186699b16c8ff07d4a73101463553a3b5d0bb6c1c34fc7ebb0bb794);
         ticket.airdrop(holders);
